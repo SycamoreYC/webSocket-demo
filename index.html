@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Our Funky HTML Page</title>
+    <meta name="description" content="Our first page" />
+    <meta name="keywords" content="html tutorial template" />
+  </head>
+  <body>
+    <h1>WebSocket</h1>
+    <ul>
+      <li>What is WebSocket?</li>
+      <li>What can we do with WebSocket</li>
+      <li>How to use WebSocket?</li>
+        <ul>
+          <li>Establish connection</li>
+          <li>Useful property: readyState</li>
+          <li>Methods: close/send</li>
+          <li>Events: close/error/message/open</li>
+        </ul>
+      <li>Observe it in Network</li>
+    </ul>
+    <button id="closeConnectionBtn">close connection</button>
+    <button id="sendMsgBtn">send message</button>
+    <div id="receiveBox"></div>
+    <script>
+      // wss secure
+      const ws = new WebSocket("ws://localhost:8082");
+
+      console.log("readyState:", ws.readyState);
+
+      // Events
+      ws.addEventListener("open", () => {
+        console.log("We are connected");
+        console.log("readyState in open:", ws.readyState);
+        ws.send("Hey, how's it going.");
+      });
+
+      ws.addEventListener("message", (evt) => {
+        console.log();
+        console.log(evt.data);
+        if (evt.data === "I am fine thanks and you?") {
+          showReply(evt)
+        }
+      });
+
+      ws.addEventListener("error", (evt) => {
+        console.log("Error event", evt);
+        console.log(evt);
+      });
+
+      ws.addEventListener("close", (evt) => {
+        console.log("Close event", evt);
+        console.log("readyState in close:", ws.readyState);
+        console.log("Server is disconnected!");
+      });
+
+      // Methods
+      document.getElementById("sendMsgBtn").addEventListener("click", () => {
+        ws.send("How are you today?");
+      });
+
+      document
+        .getElementById("closeConnectionBtn")
+        .addEventListener("click", () => {
+          ws.close();
+        });
+
+      const showReply = (evt) => {
+        document.getElementById("receiveBox").innerText = evt.data;
+      };
+    </script>
+  </body>
+</html>
